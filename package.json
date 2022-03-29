@@ -18,15 +18,11 @@
     "react-scripts": "4.0.3",
     "react-simple-oauth2-login": "^0.5.3",
     "universal-cookie": "^4.0.4",
-    "web-vitals": "^1.0.1",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^3.11.1"
+    "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "dev": "webpack serve",
     "start": "react-scripts start",
-    "build": "webpack",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
