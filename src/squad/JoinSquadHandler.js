@@ -20,7 +20,7 @@ class JoinSquadHandler extends Component {
   }
 
   componentDidMount() {
-    fetch(config.baseUrl + ":8080/squads/" + this.props.squadKey + "/join", {
+    fetch(config.apiUrl + "/squads/" + this.props.squadKey + "/join", {
       credentials: "include"
     })
     .then(checkAuthorisation)

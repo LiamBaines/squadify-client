@@ -16,7 +16,7 @@ class Wrap extends Component {
 
   componentDidMount() {
     console.log("Wrap did mount");
-    fetch(config.baseUrl + ":8080/user",
+    fetch(config.apiUrl + "/user",
       { credentials: "include" }
     )
     .then(checkAuthorisation)
@@ -36,7 +36,7 @@ class Wrap extends Component {
 
   createSquad() {
     const newSquads = this.state.squads;
-    fetch(config.baseUrl + ":8080/squads", {
+    fetch(config.apiUrl + "/squads", {
       method: "post",
       credentials: "include"
     })
@@ -50,7 +50,8 @@ class Wrap extends Component {
 
   deleteSquad(squadKey) {
     this.setState({ squads: this.state.squads.filter(squad => squad.squadKey !== squadKey) });
-    fetch(config.baseUrl + ":8080/squads/" + squadKey, {
+    let url = config.apiUrl;
+    fetch(url + "/squads/" + squadKey, {
       method: "delete",
       credentials: "include"
     })
