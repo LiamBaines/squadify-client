@@ -1,7 +1,7 @@
 const config = {
 
-  apiUrl: process.env.SQUADIFY_DEV_API_URL,
-  clientUrl: process.env.SQUADIFY_DEV_CLIENT_URL,
+  apiUrl: "http://squadify-dev-api.eu-west-2.elasticbeanstalk.com",
+  clientUrl: "https://move-urls-to-config.d2dhqwsqhvf2b5.amplifyapp.com",
   clientId: "434ddce9aa094b19abf5aeced0a5b1d7",
 
   apiUrlEscaped() {
