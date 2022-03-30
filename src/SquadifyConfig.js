@@ -1,7 +1,7 @@
 const config = {
 
-  apiUrl: "http://localhost:8080",
-  clientUrl: "http://localhost:3000",
+  apiUrl: process.env.SQUADIFY_DEV_API_URL,
+  clientUrl: process.env.SQUADIFY_DEV_CLIENT_URL,
   clientId: "434ddce9aa094b19abf5aeced0a5b1d7",
 
   apiUrlEscaped() {
