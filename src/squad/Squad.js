@@ -50,7 +50,7 @@ class Squad extends Component {
     const request = {
       newName: newName
     };
-    const response = fetch(config.baseUrl + ":8080/squads/" + this.state.squadKey + "/rename", {
+    const response = fetch(config.apiUrl + "/squads/" + this.state.squadKey + "/rename", {
       credentials: "include",
       method: "post",
       body: JSON.stringify(request)
@@ -66,7 +66,7 @@ class Squad extends Component {
       username: member.username,
       action: action
     };
-    fetch(config.baseUrl + ":8080/squads/" + this.state.squadKey + "/members", {
+    fetch(config.apiUrl + "/squads/" + this.state.squadKey + "/members", {
       credentials: "include",
       method: "post",
       body: JSON.stringify(request)
@@ -91,7 +91,7 @@ class Squad extends Component {
   createPlaylist() {
     console.log("Setting isLoadingPlaylist to true")
     this.setState({isLoadingPlaylist: true});
-    const url = config.baseUrl + ":8080/playlist/create/" + this.state.squadKey;
+    const url = config.apiUrl + "/playlist/create/" + this.state.squadKey;
     fetch(url, {
       method: "post",
       credentials: "include"
@@ -113,7 +113,7 @@ class Squad extends Component {
 
   copyInviteLinkToClipboard() {
     let tempInput = document.createElement("input");
-    tempInput.value = config.baseUrl + ":3000/join/" + this.state.squadKey;
+    tempInput.value = config.clientUrl + "/join/" + this.state.squadKey;
     document.body.appendChild(tempInput);
     tempInput.select();
     document.execCommand("copy");

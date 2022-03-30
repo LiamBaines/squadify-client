@@ -14,7 +14,7 @@ class Login extends Component {
       + "?client_id=" + config.clientId()
       + "&response_type=code"
       + "&state=" + redirect 
-      + "&redirect_uri=" + config.baseUrlEscaped() + "%3A8080%2Fauth%2Fcallback";
+      + "&redirect_uri=" + config.apiUrlEscaped() + "%2Fauth%2Fcallback";
     window.location.href = url;
   }
 

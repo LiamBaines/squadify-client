@@ -1,10 +1,11 @@
 const config = {
 
-  baseUrl: "http://192.168.0.189",
+  apiUrl: "http://localhost:8080",
+  clientUrl: "http://localhost:3000",
   clientId: "434ddce9aa094b19abf5aeced0a5b1d7",
 
-  baseUrlEscaped() {
-    return this.baseUrl.replace("://", "%3A%2F%2F")
+  apiUrlEscaped() {
+    return this.apiUrl.replaceAll(":", "%3A").replaceAll("/", "%2F")
   }
 
 }

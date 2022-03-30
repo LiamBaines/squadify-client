@@ -9,7 +9,7 @@ class JoinLogin extends Component {
   }
 
   componentDidMount() {
-    const response = fetch(config.baseUrl + ":8080/auth/login?redirect=" + config.baseUrlEscaped + "%3A3000%2Fjoin%2F" + this.props.squadKey);
+    const response = fetch(config.apiUrl + "/auth/login?redirect=" + config.apiUrlEscaped + "%2Fjoin%2F" + this.props.squadKey);
     response.then(response => response.json()).then(json => {
       window.location.href = json.redirect;
     });
