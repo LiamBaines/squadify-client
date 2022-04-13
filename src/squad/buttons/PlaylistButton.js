@@ -4,7 +4,6 @@ import config from "../../SquadifyConfig.js";
 class PlaylistButton extends Component {
 
   render() {
-    console.log()
     return this.props.playlistUrl ?
       <GoToPlaylistButton playlistUrl={this.props.playlistUrl}/> :
       <CreatePlaylistButton isPrimary={this.props.isPrimary} isLoadingPlaylist={this.props.isLoadingPlaylist} createPlaylist={this.props.createPlaylist}/>

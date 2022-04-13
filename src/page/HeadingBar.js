@@ -8,7 +8,7 @@ class HeadingBar extends Component {
         <div className="columns is-mobile is-vcentered p-1 m-0">
           <div id="headingContainer" className="column is-two-thirds">
             <h3 id="heading" className="title is-4 has-text-white">
-              {this.props.firstName}'s squads
+              {this.props.name}'s squads
             </h3>
           </div>
           <div className="column is-one-third">

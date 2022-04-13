@@ -4,6 +4,7 @@ import SquadHeading from "./heading/SquadHeading.js";
 import SquadMember from "./member/SquadMember.js";
 import config from "../SquadifyConfig.js";
 import Notification from "../page/Notification.js";
+import UpdateSquadRequest from "../.tmp/updatesquadrequest";
 
 class Squad extends Component {
 
@@ -11,11 +12,11 @@ class Squad extends Component {
     super(props);
     this.state = {
       name: props.squad.name,
+      squadId: props.squad.squadId,
       owner: props.squad.owner,
       members: props.squad.members,
-      memberRequests: props.squad.memberRequests,
-      squadKey: props.squad.squadKey,
-      playlistUrl: props.squad.playlistUrl,
+      requests: props.squad.requests,
+      playlistUrl: props.squad.playlist == null ? null : props.squad.playlist.url,
       isEditing: props.squad.isEditing,
       isPrimary: props.isPrimary,
       showNotification: false,
@@ -25,18 +26,21 @@ class Squad extends Component {
     this.createPlaylist = this.createPlaylist.bind(this);
     this.deleteSquad = this.deleteSquad.bind(this);
     this.copyInviteLinkToClipboard = this.copyInviteLinkToClipboard.bind(this);
-    this.manageSquadMembers = this.manageSquadMembers.bind(this);
+    this.approveRequest = this.approveRequest.bind(this);
+    this.declineRequest = this.declineRequest.bind(this);
+    this.deleteMember = this.deleteMember.bind(this);
     this.renameSquad = this.renameSquad.bind(this);
   }
 
   render() {
+    console.log(this.state.squadId + " (" + this.state.name + ")")
     return (
-      <div className="panel is-success has-background-white" key={this.state.squadKey}>
+      <div className="panel is-success has-background-white" key={this.state.squadId}>
         <SquadHeading squadName={this.state.name} isEditing={this.state.isEditing} isPrimary={this.state.isPrimary} renameSquad={this.renameSquad}/>
-        <SquadMember key={this.state.squadKey + this.state.owner.username} user={this.state.owner} isOwner={true}/>
-        {this.state.members.map(member => <SquadMember key={this.state.squadKey + member.username} user={member} manageSquadMembers={this.manageSquadMembers} isPrimary={this.state.isPrimary}/>)}
-        {this.state.memberRequests.map(member => <SquadMember key={this.state.squadKey + member.username} user={member} isPrimary={this.state.isPrimary} type="pending" manageSquadMembers={this.manageSquadMembers}/>)}
-        <SquadActionButtons key={this.state.squadKey + "buttons"} isPrimary={this.state.isPrimary} playlistUrl={this.state.playlistUrl} isLoadingPlaylist={this.state.isLoadingPlaylist } addPlaylistUrl={this.addPlaylistUrl} createPlaylist={this.createPlaylist} deleteSquad={this.deleteSquad} copyInviteLinkToClipboard={this.copyInviteLinkToClipboard}/>
+        <SquadMember key={this.state.squadId + this.state.owner.username} user={this.state.owner} isOwner={true}/>
+        {this.state.members.map(member => <SquadMember key={this.state.squadId + member.username} user={member} deleteMember={this.deleteMember} isPrimary={this.state.isPrimary}/>)}
+        {this.state.requests.map(request => <SquadMember key={this.state.squadId + request.username} user={request} isPrimary={this.state.isPrimary} type="pending" approveRequest={this.approveRequest} declineRequest={this.declineRequest}/>)}
+        <SquadActionButtons key={this.state.squadId + "buttons"} isPrimary={this.state.isPrimary} playlistUrl={this.state.playlistUrl} isLoadingPlaylist={this.state.isLoadingPlaylist } addPlaylistUrl={this.addPlaylistUrl} createPlaylist={this.createPlaylist} deleteSquad={this.deleteSquad} copyInviteLinkToClipboard={this.copyInviteLinkToClipboard}/>
         <Notification visible={this.state.showNotification} ></Notification>
       </div>
     )
@@ -46,74 +50,77 @@ class Squad extends Component {
     this.setState({ playlistUrl: playlistUrl });
   }
 
-  renameSquad(newName) {
-    const request = {
-      newName: newName
-    };
-    const response = fetch(config.apiUrl + "/squads/" + this.state.squadKey + "/rename", {
+  renameSquad(name) {
+    const request = new UpdateSquadRequest({
+      name: name
+    });
+    let url = config.apiUrl + "/v1/squads/" + this.state.squadId;
+    const response = fetch(url, {
       credentials: "include",
-      method: "post",
+      method: "put",
       body: JSON.stringify(request)
     });
     response.then(response => {
-      console.log(response);
-      this.setState({ name: newName })
+      this.setState({
+        name: name 
+      })
     })
   }
 
-  manageSquadMembers(member, action) {
-    const request = {
-      username: member.username,
-      action: action
-    };
-    fetch(config.apiUrl + "/squads/" + this.state.squadKey + "/members", {
+  approveRequest(approvedRequest) {
+    fetch(config.apiUrl + "/v1/squads/" + this.state.squadId + "/members/" + approvedRequest.username, {
       credentials: "include",
-      method: "post",
-      body: JSON.stringify(request)
+      method: "put"
     })
     this.setState({ 
-      memberRequests: this.state.memberRequests.filter(pendingMember => member.username !== pendingMember.username)
+      members: this.state.members.concat(approvedRequest),
+      requests: this.state.requests.filter(request => request.username != approvedRequest.username)
+    });
+  }
+
+  declineRequest(declinedRequest) {
+    fetch(config.apiUrl + "/v1/squads/" + this.state.squadId + "/requests/" + declinedRequest.username, {
+      credentials: "include",
+      method: "delete"
     })
-    if (action === "ACCEPT") {
-      const newMembers = this.state.members.slice();
-      newMembers.push(member)
-      this.setState({
-        members: newMembers
-      })
-    }
-    if (action === "REMOVE") {
-      this.setState({
-        members: this.state.members.filter(removedMember => member.username !== removedMember.username)
-      })
-    }
+    this.setState({ 
+      requests: this.state.requests.filter(request => request.username != declinedRequest.username)
+    });
+  }
+
+  deleteMember(deletedMember) {
+    fetch(config.apiUrl + "/v1/squads/" + this.state.squadId + "/members/" + deletedMember.username, {
+      credentials: "include",
+      method: "delete"
+    });
+    this.setState({ 
+      members: this.state.members.filter(member => member.username !== deletedMember.username),
+    });
   }
 
   createPlaylist() {
-    console.log("Setting isLoadingPlaylist to true")
     this.setState({isLoadingPlaylist: true});
-    const url = config.apiUrl + "/playlist/create/" + this.state.squadKey;
+    const url = config.apiUrl + "/v1/squads/" + this.state.squadId + "/playlist";
     fetch(url, {
       method: "post",
       credentials: "include"
     })
-    .then(response => response.json()).then(json => {
-      console.log("Setting isLoadingPlaylist to false")
-      this.setState(
-        {
+    .then(response => response.json())
+    .then(json => {
+      this.setState({
           isLoadingPlaylist: false,
-          playlistUrl: json.playlistUrl
-        }
-      );
+          playlistUfl: json.url
+          });
     });  
   }
 
   deleteSquad() {
-    this.props.deleteSquad(this.state.squadKey);
+    this.props.deleteSquad(this.state.squadId);
   }
 
   copyInviteLinkToClipboard() {
     let tempInput = document.createElement("input");
-    tempInput.value = config.clientUrl + "/join/" + this.state.squadKey;
+    tempInput.value = config.clientUrl + "/join/" + this.state.squadId;
     document.body.appendChild(tempInput);
     tempInput.select();
     document.execCommand("copy");

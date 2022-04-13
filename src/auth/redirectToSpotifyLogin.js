@@ -1,7 +1,6 @@
 import config from "../SquadifyConfig";
 
 function redirectToSpotifyLogin() {
-  console.log("handling 401 @ " + window.location.pathname);
   window.location.href = "https://accounts.spotify.com/authorize"
   + "?client_id=" + config.clientId
   + "&response_type=code"

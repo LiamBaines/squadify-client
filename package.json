@@ -10,6 +10,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "dotenv": "^16.0.0",
+    "node-swagger-models": "^0.0.20",
     "qs": "^6.10.1",
     "query-string": "^7.0.0",
     "react": "^17.0.1",
@@ -43,5 +44,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "node-swagger-models" : {
+    "fileOutput": "/src/.tmp",
+    "filePrefix": "",  
+    "api": "https://raw.githubusercontent.com/LiamBaines/squadify-api/main/src/main/resources/squadify-api-swagger.yaml",
+    "format": "classout"
   }
 }

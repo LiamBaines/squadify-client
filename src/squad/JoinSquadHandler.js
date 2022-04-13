@@ -15,13 +15,16 @@ class JoinSquadHandler extends Component {
 
   render() {
     return this.state.loading ?
-      null :
-      <Redirect to="/"/>
+      null
+      : <Redirect to="/"/>
   }
 
-  componentDidMount() {
-    fetch(config.apiUrl + "/squads/" + this.props.squadKey + "/join", {
-      credentials: "include"
+  componentWillMount() {
+    let url = config.apiUrl + "/v1/squads/" + this.props.squadId + "/requests/" + this.props.user.username
+    console.log("PUT " + url)
+    fetch(url, {
+      credentials: "include",
+      method: "put"
     })
     .then(checkAuthorisation)
     .then(() => this.setState({ loading: false }))
